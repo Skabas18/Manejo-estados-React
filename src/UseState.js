@@ -2,44 +2,58 @@ import React from 'react'
 
 const SECURITY_CODE = 'paradigma';
 function UseState({ name }) {
-  const [value, setValue] = React.useState('');
-  const [error, setError] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
-  console.log(value);
+  const [state, setState] = React.useState({
+    value: '',
+    error: false,
+    loading: false,
+  })
+  console.log(state);
   React.useEffect(() => {
     console.log("Empezando el efecto");
-    if (!!loading) {
+    if (!!state.loading) {
       setTimeout(() => {
         console.log("Haciendo la validación");
-        if (value === SECURITY_CODE) {
-          setLoading(false);
-        }else{
-          setError(true);
-          setLoading(false);
+        if (state.value === SECURITY_CODE) {
+          setState({
+            ...state,
+            error: false,
+            loading: false
+          });
+        } else {
+          setState({
+            ...state,
+            error: true,
+            loading: false
+          });
         }
         console.log("Terminando la validación");
       }, 3000);
     }
     console.log("Terminando el efecto");
 
-  }, [loading])
+  }, [state.loading])
   return (
     <div>
       <h2>Eliminar {name}</h2>
       <p>Por favor, escribe el código de seguridad.</p>
-      {(error && !loading) && (
+      {(state.error && !state.loading) && (
         <p>Error: el código es incorrecto</p>
       )}
-      {loading && (
+      {state.loading && (
         <p>Cargando ...</p>
       )}
-      <input placeholder='Código de seguridad' value={value} onChange={(event) => {
-        // setError(false);
-        setValue(event.target.value);
+      <input placeholder='Código de seguridad' value={state.value} onChange={(event) => {
+        setState({
+          ...state,
+          value: event.target.value
+        });
       }} />
       <button onClick={() => {
-        // setError(false);
-        setLoading(true)}}>Comprobar</button>
+        setState({
+          ...state,
+          loading: true
+        });
+      }}>Comprobar</button>
     </div>
   )
 }
